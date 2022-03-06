@@ -1,0 +1,31 @@
+<!-- <% statusHelper = (status,link)=>{ %>
+    <a href="<%= link %>">
+        <% if(status == 'active'){ %>
+            <span class="label label-success">active</span>
+        <%}else if(status == 'inactive'){%>
+            <span class="label label-warning">inactive</span>
+        <%}%>
+    </a>
+<% } %> -->
+
+<%
+    statusHelper = (collection,status,id)=>{
+        let xhtmlStatus ='';
+        let link = systemConfig.prefixAdmin + '/'+ collection +'/change-status/'+id+'/'+status;
+        if(status == 'active'){
+            xhtmlStatus='<span class="label label-success">active</span>';            
+        }else if(status=='inactive'){
+            xhtmlStatus='<span class="label label-warning">inactive</span>'
+        }
+        return `<a href="${link}">${xhtmlStatus}</a>`;
+    }
+%>
+<!-- <% if(items.status == 1){ %>
+    <a href="#">
+        <span class="label label-success">active</span>
+        </a>    
+<%}else if(items.status == 0){%>
+    <a href="#">
+        <span class="label label-warning">inactive</span>
+        </a>    
+<%}%> -->

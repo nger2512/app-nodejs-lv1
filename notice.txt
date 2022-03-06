@@ -1,0 +1,5 @@
+Loi thong ke status
+hien thong bao khi thay doi status
+hien thong bao khi xoa 1 items
+hien thong bao khi thay doi status cua nhieu phan tu
+hien thi thong bao cho xoa nhieu phan tu
