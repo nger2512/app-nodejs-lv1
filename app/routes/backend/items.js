@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const itemModel = require(__path_schemas+'items');
-const utilsHelpers = require(__path_helper+'utils');
-const paramsHelpers = require(__path_helper+'/params');
+const utilsHelpers = require(__path_helpers+'utils');
+const paramsHelpers = require(__path_helpers+'/params');
 const systemConfig = require(__path_configs+'system')
 const { response } = require('express');
 const res = require('express/lib/response');
-const { getParams } = require(__path_helper+'params');
+const { getParams } = require(__path_helpers+'params');
 const validators = require(__path_validates+'items');
 const notify = require(__path_configs+'notify');
 const util = require('util');
