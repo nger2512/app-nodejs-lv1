@@ -8,6 +8,7 @@ const validator = require('express-validator');
 const session = require('express-session');
 const mongoose = require('mongoose');
 const pathConfig = require('./path');
+const moment =require('moment');
 
 global.__base = __dirname + '/'; // define path
 global.__path_app = __base + pathConfig.folder_app+'/'; // define path
@@ -18,6 +19,7 @@ global.__path_views = __path_app +pathConfig.folder_views+'/';
 global.__path_routes = __path_app +pathConfig.folder_routes+ '/';
 global.__path_validates = __path_app +pathConfig.folder_validates+ '/';
 global.__path_helpers = __path_app +pathConfig.folder_helpers+ '/';
+global.__path_models = __path_app +pathConfig.folder_models+'/';
 // console.log(__path_configs);
 
 const databaseConfig = require(__path_configs+'database');
@@ -76,7 +78,6 @@ app.use(session({
   secret: 'abcdef',
   resave: false,
   saveUninitialized: true, 
-  cookie: { secure: true }
 }))
 app.use(flash(app, {
   viewName: __path_views+'elements/notify',
@@ -93,7 +94,7 @@ app.use(flash(app, {
 
 //app.use(session(sess));
 app.use(flash(app));
-
+app.locals.moment =moment;
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

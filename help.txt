@@ -54,3 +54,13 @@ List -> Click A change status -> change status admin/items/change-status/:id/act
 
 
 change multi //custom.js
+
+backend (admin control)
+forntend member guest
+
+
+////group
+admin     group-acp =yes // no
+member
+founder
+manager

@@ -9,4 +9,9 @@ module.exports ={
     'ERROR_NAME':'Chiều dài từ %d đến %d ký tự',
     'ERROR_ORDERING':'Phải là số nguyên lớn hơn %d và bé hơn %d',
     'ERROR_STATUS':'Phải chọn một trạng thái',
+    'ERROR_CONTENT':'Chiều dài từ %d đến %d ký tự',
+    'ERROR_GROUP_ACP':'Chọn giá trị cho group acp',
+    'CHANGE_GROUP_ACP_SUCCESS':'Cập nhật group acp thành công',
+    'ERROR_SELECT_GROUP':'Phải chọn một group',
+    'CHANGE_ORDERING_SUCCESS':'Cập nhật ordering thành công',
 };

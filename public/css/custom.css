@@ -43,3 +43,7 @@ li.active > a:first-child{
 img.error-page-img {
     width: 800px;
 }
+
+input.ordering{
+    width: 60px;
+}

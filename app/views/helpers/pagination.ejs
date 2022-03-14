@@ -1,5 +1,5 @@
 <%
-    paginationHelper =(paginationObj,type,currentStatus,search)=>{
+    paginationHelper =(paginationObj,linkPrefix,currentStatus,search)=>{
         let totalItems = paginationObj.totalItems;
         let totalItemsPerPage = paginationObj.totalItemsPerPage;
         let totalPages = Math.ceil(totalItems/totalItemsPerPage);
@@ -16,7 +16,7 @@
         }
         if(totalPages > 1) {
             let xhtmlStart = '', xhtmlPrevious = '', xhtmlPages = '', xhtmlNext = '' , xhtmlEnd = '';
-            let link       = systemConfig.prefixAdmin + '/'+ type +'/status/'+currentStatus;
+            let link       = linkPrefix +'status/'+currentStatus;
             if(search !== '') link += '?search=' + search + '&page=';
             else link += '?page=';
             if(currentPage > 1){

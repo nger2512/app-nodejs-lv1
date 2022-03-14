@@ -1,3 +1,4 @@
 module.exports = {
-    prefixAdmin : 'admin'
+    prefixAdmin : 'admin',
+    format_long_time : 'DD-MM-YYYY'
 }
