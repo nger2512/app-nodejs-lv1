@@ -7,4 +7,6 @@ module.exports={
     folder_routes :  'routes',
     folder_validates :  'validates',
     folder_helpers :  'helpers',
+    folder_public : 'public',
+    folder_upload : 'uploads'
 };

@@ -171,5 +171,11 @@ $(document).ready(function () {
     $('input#name_slug').keyup(function(){
         $('input[name="slug"]').val(ChangeToSlug($(this).val()));
      });
+     $( "form[name=form-upload]" ).submit(function( event ) {
+        let avatar = $(this).find("input[name=avatar]");
+        $(this).find("input[name=avatar]").remove();
+        $(this).append(avatar).css({'display':'none'});
+    });
+
      
 });

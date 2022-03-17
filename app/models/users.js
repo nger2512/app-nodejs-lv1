@@ -1,5 +1,8 @@
-const userModel = require(__path_schemas + 'users');
 
+
+const userModel = require(__path_schemas + 'users');
+const fileHelper = require(__path_helpers + 'file');
+const fs = require('fs');
 module.exports = {
     listItems:(params,options =null)=>{
         let objWhere = {};
@@ -10,7 +13,7 @@ module.exports = {
         sort[params.sortField] = params.sortType;
 
         return userModel.find(objWhere)
-            .select('name status group.name ordering created modified')
+            .select('name status avatar group.name ordering created modified')
             .sort(sort)
             .skip((params.pagination.currentPage-1)*params.pagination.totalItemsPerPage)
             .limit(params.pagination.totalItemsPerPage);
@@ -63,12 +66,29 @@ module.exports = {
             return userModel.updateOne({_id:cids},data);
         }  
     },
-    deleteItem:(id,options =null)=>{
-        // active <-> inactive
+    deleteItem:async(id,options =null)=>{
         if(options.task == "delete-one"){
+           
+            
+            await userModel.findById(id).then((item)=>{
+                fileHelper.remove('public/uploads/users/',item.avatar);
+                
+            })
             return userModel.deleteOne({_id:id});
         }
         if(options.task == "delete-many"){
+            if(Array.isArray(id)){
+
+                for (var i = 0 ; i < id.length;i++){
+                    await userModel.findById(id[i]).then((item)=>{
+                        fileHelper.remove('public/uploads/users/',item.avatar);
+                    }) 
+                }
+            }else{
+                await userModel.findById(id).then((item)=>{
+                    fileHelper.remove('public/uploads/users/',item.avatar);
+                }) 
+            }
             return userModel.remove({_id:{$in:id}});
         }
        
@@ -102,6 +122,7 @@ module.exports = {
                 ordering: parseInt(item.ordering),
                 name: item.name,
                 content:item.content,
+                avatar :item.avatar,
                 //group:data
                 group:{
                     id: item.group_id,

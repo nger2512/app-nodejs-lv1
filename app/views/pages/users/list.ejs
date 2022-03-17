@@ -2,6 +2,7 @@
 <%
     const collection = 'users';
     const linkPrefix = systemConfig.prefixAdmin + `/${collection}/`;
+    const folderUpload = 'uploads/users/';
 %>
 
 <%- locals.flash %>
@@ -64,6 +65,7 @@
                                     </th>
                                     <th>#</th>
                                     <%- sortHelper(collection,'Name','name',params.sortField,params.sortType,'width=20%') %> 
+                                    <th style="width =15%">Avatar</th>
                                     <%- sortHelper(collection,'Group','group.name',params.sortField,params.sortType) %>
                                     <%- sortHelper(collection,'Status','status',params.sortField,params.sortType) %>
                                     <%- sortHelper(collection,'Ordering','ordering',params.sortField,params.sortType) %>
@@ -74,7 +76,7 @@
                                    
                                     <th>Created</th>
                                     <th>Modified</th>
-                                    <th>Action</th>
+                                    <th style="width = 15%">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -89,7 +91,11 @@
                                                     value="<%= item.id %>" />
                                             </td>
                                             <td><%= index + 1 %></td>
-                                            <td class="text-center pointer"><%= item.name %></td>    
+                                            <td class="text-center pointer"><%= item.name %></td>
+                                            <td >
+                                               <% include ./../../helpers/image %> 
+                                               <%- imageHelper(folderUpload,item.avatar,item.name)%>
+                                            </td>
                                             <td class="text-center pointer"><%= item.group.name %></td> 
                                             <td class="text-center pointer"><%- statusHelper(linkPrefix,item.status,item.id) %></td>
                                             <td class="text-center pointer">

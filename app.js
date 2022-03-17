@@ -20,6 +20,8 @@ global.__path_routes = __path_app +pathConfig.folder_routes+ '/';
 global.__path_validates = __path_app +pathConfig.folder_validates+ '/';
 global.__path_helpers = __path_app +pathConfig.folder_helpers+ '/';
 global.__path_models = __path_app +pathConfig.folder_models+'/';
+global.__path_public = __base +pathConfig.folder_public+'/';
+global.__path_upload = __path_public +pathConfig.folder_upload+'/';
 // console.log(__path_configs);
 
 const databaseConfig = require(__path_configs+'database');

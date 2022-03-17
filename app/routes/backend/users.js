@@ -13,6 +13,8 @@ const validators = require(__path_validates+'users');
 const notify = require(__path_configs+'notify');
 const util = require('util');
 const session = require('express-session');
+const fileHelper = require(__path_helpers+'file');
+const fs = require('fs');
 
 const linkIndex = '/'+systemConfig.prefixAdmin+'/users/';
 
@@ -21,6 +23,24 @@ const pageTitleAdd = pageTitleIndex +' - Add';
 const pageTitleEdit = pageTitleIndex +' - Edit';
 
 const folderview = __path_views+'pages/users/';
+
+const uploadAvatar = fileHelper.upload(
+    'avatar',
+    'users',
+)
+
+// router.post('/upload',(req,res)=>{
+//     let errors =[];
+//     uploadAvatar(req, res, function (err) {
+//         if (err) {
+//           errors.push({param:'avatar',msg :err})
+         
+//         } 
+//         // Everything went fine.
+//         res.render(`${folderview}upload`,{pageTitle:pageTitleIndex,errors});
+//       })
+   
+// })
 
 //GET LIST FOLLOW STATUS
 router.get('(/status/:status)?', async function(req,res){
@@ -101,7 +121,8 @@ router.post('/change-ordering',async(req,res)=>{
 //DELETE 1 ITEM
 router.get('/delete/:id',async(req,res)=>{
     let id = paramsHelpers.getParams(req.params,'id','');
-    await userModel.deleteItem(id,{task : 'delete-one'})
+    
+    userModel.deleteItem(id,{task : 'delete-one'})
     .then(result=>{
         req.flash('success',notify.DELETE_SUCCESS,false);
         res.redirect(linkIndex);
@@ -112,7 +133,7 @@ router.get('/delete/:id',async(req,res)=>{
 
 //DELETE STATUS OF MANY ITEMS
 router.post('/delete',async(req,res)=>{
-    await userModel.deleteItem(req.body.cid).then((result)=>{
+    await userModel.deleteItem(req.body.cid,{task:'delete-many'}).then((result)=>{
         //console.log(result);
         req.flash('success',util.format(notify.DELETE_MULTI_SUCCESS,result.deletedCount),false);
         res.redirect(linkIndex);
@@ -147,29 +168,45 @@ router.get('/form(/:id)?',async(req,res)=>{
     
 })
 //post add, edit
-router.post('/save',async(req,res)=>{
-    req.body = JSON.parse(JSON.stringify(req.body));
-    validators.validator(req);
-    let item = Object.assign(req.body); // copy data in form
-    let errors = req.validationErrors();
-    let taskCurrent = (typeof item !== "undefined" && item.id !== "" )?"edit":"add";
-    if(errors){
-        let groupItems = [];
-        await groupModel.listItemsInSelectbox().then((items)=>{ ///await xong find thì load ra items of group
-            groupItems = items;
-            groupItems.unshift({_id:'allvalue',name: 'Choose Group'});
-        });
-        let pageTitle = (taskCurrent=="add")?pageTitleAdd :pageTitleEdit;
-        res.render(`${folderview}/form`,{pageTitle,item,errors,groupItems});
-    }else{
-        let message = (taskCurrent=="add")?notify.ADD_SUCCESS:notify.EDIT_SUCCESS;
-        
-        userModel.saveItem(item,{task:taskCurrent}).then((result) => {
-            req.flash('success',message , false);
-            res.redirect(linkIndex);
-        });
-    }
-})
+router.post('/save',  (req, res, next) => {
+	uploadAvatar(req, res, async (errUpload) => {
+		req.body = JSON.parse(JSON.stringify(req.body));
+
+		let item = Object.assign(req.body);
+		let taskCurrent	= (typeof item !== "undefined" && item.id !== "" ) ? "edit" : "add";
+
+		let errors = validators.validator(req, errUpload, taskCurrent);
+		
+		if(errors.length > 0) { 
+			let pageTitle = (taskCurrent == "add") ? pageTitleAdd : pageTitleEdit;
+			if(req.file != undefined) fileHelper.remove('public/uploads/users/', req.file.filename); // xóa tấm hình khi form không hợp lệ
+		
+			let groupItems	= [];
+			await groupModel.listItemsInSelectbox().then((items)=> {
+				groupItems = items;
+				groupItems.unshift({_id: 'allvalue', name: 'All group'});
+			});
+			
+			if (taskCurrent == "edit") item.avatar = item.image_old;
+			res.render(`${folderview}form`, { pageTitle, item, errors, groupItems});
+		}else {
+			let message = (taskCurrent == "add") ? notify.EDIT_SUCCESS : notify.EDIT_SUCCESS;
+			if(req.file == undefined){ // không có upload lại hình
+				item.avatar = item.image_old;
+			}else{
+				item.avatar = req.file.filename;
+				if(taskCurrent == "edit") fileHelper.remove('public/uploads/users/', item.image_old);
+			}
+
+			userModel.saveItem(item, {task: taskCurrent}).then((result) => {
+				req.flash('success', message, false);
+				res.redirect(linkIndex);
+			});
+		}
+	});
+});
+    
+
 
 router.get('/sort/:sort_field/:sort_type',(req,res)=>{
     let sort_field= paramsHelpers.getParams(req.params,'sort_field','ordering');

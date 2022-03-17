@@ -14,4 +14,7 @@ module.exports ={
     'CHANGE_GROUP_ACP_SUCCESS':'Cập nhật group acp thành công',
     'ERROR_SELECT_GROUP':'Phải chọn một group',
     'CHANGE_ORDERING_SUCCESS':'Cập nhật ordering thành công',
+    'ERROR_FILE_EXTENSION':'Phần mở rộng không chính xác',
+    'ERROR_FILE_REQUIRE' :'Vui lòng chọn avatar',
+    'ERROR_FILE_LIMIT' :'Kích thước file quá lớn'
 };
