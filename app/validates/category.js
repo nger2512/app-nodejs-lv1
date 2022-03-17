@@ -23,6 +23,8 @@ module.exports ={
         req.checkBody('status',notify.ERROR_STATUS).isNotEqual(options.status.value);
         req.checkBody('content',util.format(notify.ERROR_NAME,options.content.min,options.content.max))
         .isLength({min:options.content.min, max:options.content.max});
+        let errors = req.validationErrors() !== false ? req.validationErrors() : [];
+        return errors;
     },
     
     

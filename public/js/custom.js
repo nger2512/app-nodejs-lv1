@@ -176,6 +176,14 @@ $(document).ready(function () {
         $(this).find("input[name=avatar]").remove();
         $(this).append(avatar).css({'display':'none'});
     });
+    $('select[name="category_id"]').change(function(){
+        $('input[name="category_name"]').val($(this).find('option:selected').text()); //TH chọn Choose Group: validate đã kiểm tra
+    });
 
+    $('select[name="filter_category"]').change(function(){
+        var path = window.location.pathname.split('/');
+        var linkRedirect = '/' + path[1] + '/' +  path[2] + '/filter-category/' + $(this).val(); 
+            window.location.pathname = linkRedirect;
+    });
      
 });

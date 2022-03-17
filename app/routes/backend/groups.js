@@ -130,11 +130,14 @@ router.get('/form(/:id)?',async(req,res)=>{
 //post add, edit
 router.post('/save',async(req,res)=>{
     req.body = JSON.parse(JSON.stringify(req.body));
-    validators.validator(req);
+
     let item = Object.assign(req.body); // copy data in form
-    let errors = req.validationErrors(); //hàm trong validator
+   
     let taskCurrent = (typeof item!==undefined && item.id!=='')?"edit":"add";
-    if(errors){
+    
+    let errors = validators.validator(req);
+
+    if(errors.length > 0){
         let pageTitle = (taskCurrent=='add')?pageTitleAdd:pageTitleEdit;
         res.render(`${folderview}/form`,{pageTitle,item,errors});
     }else{

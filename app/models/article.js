@@ -1,30 +1,30 @@
 
 
-const userModel = require(__path_schemas + 'users');
+const articleModel = require(__path_schemas + 'article');
 const fileHelper = require(__path_helpers + 'file');
 const fs = require('fs');
-const uploadFolder = 'public/uploads/users/';
+const uploadFolder = 'public/uploads/article/';
 module.exports = {
     listItems:(params,options =null)=>{
         let objWhere = {};
         let sort  ={};
-        if(params.groupID !== 'allvalue' && params.groupID !== '') objWhere['group.id'] = params.groupID; 
+        if(params.categoryID !== 'allvalue' && params.categoryID !== '') objWhere['category.id'] = params.categoryID; 
         if(params.currentStatus !== 'all') objWhere.status = params.currentStatus;
         if(params.search !== '') objWhere.name = {'$regex': params.search, '$options': 'i'};
         sort[params.sortField] = params.sortType;
 
-        return userModel.find(objWhere)
-            .select('name status avatar group.name ordering created modified')
+        return articleModel.find(objWhere)
+            .select('name status thumb category.name ordering created modified')
             .sort(sort)
             .skip((params.pagination.currentPage-1)*params.pagination.totalItemsPerPage)
             .limit(params.pagination.totalItemsPerPage);
     },
     
     getItem:(id,options = null)=>{
-        return userModel.findById(id);
+        return articleModel.findById(id);
     },
     countItem:(params,options =null)=>{
-        return userModel.count(params.objWhere);
+        return articleModel.count(params.objWhere);
     },
     changeStatus:(id,currentStatus,options =null)=>{
         // active <-> inactive
@@ -39,58 +39,59 @@ module.exports = {
         }
         if(options.task == "update-one"){
             
-            return userModel.updateOne({_id:id},data);
+            return articleModel.updateOne({_id:id},data);
         }
         if(options.task == "update-many"){
             data.status =currentStatus;
-            return userModel.updateMany({_id:{$in:id}},data);
+            return articleModel.updateMany({_id:{$in:id}},data);
         }
         console.log(options.task);
         
     },
     changeOrdering:async(cids,orderings,options =null)=>{
-        let data ={
+        let data = {
+            ordering: parseInt(orderings), 
             modified:{
-                user_id : 0,
-                user_name : "admin",
-                time : Date.now()
-            },
-            ordering:parseInt(orderings)
-        };
-        if(Array.isArray(cids)){
-            for(let index = 0;index < cids ;index++){
+                user_id: 0,
+                user_name: 0,
+                time: Date.now()
+                }
+            };
+
+        if(Array.isArray(cids)) {
+            for(let index = 0; index < cids.length; index++) {
                 data.ordering = parseInt(orderings[index]);
-                await userModel.updateOne({_id:cids[index]},data);
+                await articleModel.updateOne({_id: cids[index]}, data)
             }
-           return Promise.resolve("success");
+            return Promise.resolve("success");
         }else{
-            return userModel.updateOne({_id:cids},data);
-        }  
+            return articleModel.updateOne({_id: cids}, data);
+        }
     },
     deleteItem:async(id,options =null)=>{
         if(options.task == "delete-one"){
            
             
-            await userModel.findById(id).then((item)=>{
+            await articleModel.findById(id).then((item)=>{
                 fileHelper.remove(uploadFolder,item.avatar);
                 
             })
-            return userModel.deleteOne({_id:id});
+            return articleModel.deleteOne({_id:id});
         }
         if(options.task == "delete-many"){
             if(Array.isArray(id)){
 
                 for (var i = 0 ; i < id.length;i++){
-                    await userModel.findById(id[i]).then((item)=>{
+                    await articleModel.findById(id[i]).then((item)=>{
                         fileHelper.remove(uploadFolder,item.avatar);
                     }) 
                 }
             }else{
-                await userModel.findById(id).then((item)=>{
+                await articleModel.findById(id).then((item)=>{
                     fileHelper.remove(uploadFolder,item.avatar);
                 }) 
             }
-            return userModel.remove({_id:{$in:id}});
+            return articleModel.remove({_id:{$in:id}});
         }
        
         
@@ -102,18 +103,15 @@ module.exports = {
                 user_name : "admin",
                 time : Date.now()
             }
-            item.group={
-                id:item.group_id,
-                name:item.group_name
+            item.category={
+                id:item.category_id,
+                name:item.category_name
             }
-            return new userModel(item).save();
+            return new articleModel(item).save();
         }
         if(options.task == 'edit'){
-            let data={
-                id:item.group_id,
-                name:item.group_name
-            }
-            return userModel.updateOne({_id:item.id},{
+            
+            return articleModel.updateOne({_id:item.id},{
                 modified:{
                 user_id : 0,
                 user_name : "admin",
@@ -123,17 +121,17 @@ module.exports = {
                 ordering: parseInt(item.ordering),
                 name: item.name,
                 content:item.content,
-                avatar :item.avatar,
+                thumb :item.thumb,
                 //group:data
-                group:{
-                    id: item.group_id,
-                    name :item.group_name
+                category:{
+                    id: item.category_id,
+                    name :item.category_name
                 }
             });
         }
-        if(options.task == "change-group-name") {
-            return userModel.updateMany({'group.id': item.id}, {
-				group: {
+        if(options.task == "change-category-name") {
+            return articleModel.updateMany({'category.id': item.id}, {
+				category: {
                     id: item.id,
 					name: item.name,
 				},

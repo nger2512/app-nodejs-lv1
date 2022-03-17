@@ -19,6 +19,9 @@ module.exports = {
         return categoryModel.findById(id);
 
     },
+    listItemsInSelectbox: (params, options = null) => {
+        return categoryModel.find({}, {_id: 1, name: 1})
+    },
     countItem:(params,options =null)=>{
         return categoryModel.count(params.objWhere);
     },

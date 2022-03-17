@@ -13,6 +13,7 @@ module.exports ={
     'ERROR_GROUP_ACP':'Chọn giá trị cho group acp',
     'CHANGE_GROUP_ACP_SUCCESS':'Cập nhật group acp thành công',
     'ERROR_SELECT_GROUP':'Phải chọn một group',
+    'ERROR_SELECT_CATEGORY':'Phải chọn một category',
     'CHANGE_ORDERING_SUCCESS':'Cập nhật ordering thành công',
     'ERROR_FILE_EXTENSION':'Phần mở rộng không chính xác',
     'ERROR_FILE_REQUIRE' :'Vui lòng chọn avatar',

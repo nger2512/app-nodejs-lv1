@@ -129,12 +129,12 @@ router.post('/save',async(req,res)=>{
     req.body = JSON.parse(JSON.stringify(req.body));
 	let item 	= Object.assign(req.body);
 	let taskCurrent	= (typeof item !== "undefined" && item.id !== "" ) ? "edit" : "add";
-
-	let errors = validators.validator(req);
+    
+    let errors = validators.validator(req);
 		
-	if(errors) { 
+    if(errors.length > 0) { 
 		let pageTitle = (taskCurrent == "add") ? pageTitleAdd : pageTitleEdit;
-		res.render(`${folderView}form`, { pageTitle, item, errors});
+		res.render(`${folderview}form`, { pageTitle, item, errors});
 	}else {
 		let message = (taskCurrent == "add") ? notify.ADD_SUCCESS : notify.EDIT_SUCCESS;
 		itemModel.saveItem(item, {task: taskCurrent}).then((result) => {

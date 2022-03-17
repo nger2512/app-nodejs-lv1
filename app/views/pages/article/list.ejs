@@ -1,8 +1,8 @@
 <!-- <h3><%= JSON.stringify(statusFilter)%></h3> -->
 <%
-    const collection = 'users';
+    const collection = 'article';
     const linkPrefix = systemConfig.prefixAdmin + `/${collection}/`;
-    const folderUpload = 'uploads/users/';
+    const folderUpload = 'uploads/article/';
 %>
 
 <%- locals.flash %>
@@ -24,7 +24,7 @@
                     </div>
                     <div class="col-sm-2">
                         <% include ./../../helpers/selectbox %>
-                        <%- selectboxHelper('filter_group',groupItems,params.groupID) %>  <!-- lọc theo group -->
+                        <%- selectboxHelper('filter_category',categoryItems,params.categoryID) %>  <!-- lọc theo category -->
                     </div>
                     <div class="col-sm-5">
                         <form action="<%= linkPrefix %>status/<%= params.currentStatus %>" method="GET">
@@ -49,7 +49,7 @@
     <div class="col-lg-12">
         <div class="panel panel-info">
             <div class="panel-heading">
-                List User
+                List Article
             </div>
             <!-- /.panel-heading -->
             <div class="panel-body">
@@ -65,8 +65,8 @@
                                     </th>
                                     <th>#</th>
                                     <%- sortHelper(collection,'Name','name',params.sortField,params.sortType,'width=20%') %> 
-                                    <th style="width:15%">Avatar</th>
-                                    <%- sortHelper(collection,'Group','group.name',params.sortField,params.sortType) %>
+                                    <th style="width:15%;">Thumb</th>
+                                    <%- sortHelper(collection,'Category','category.name',params.sortField,params.sortType) %>
                                     <%- sortHelper(collection,'Status','status',params.sortField,params.sortType) %>
                                     <%- sortHelper(collection,'Ordering','ordering',params.sortField,params.sortType) %>
                                     <!-- <th class="text-center pointer"><a href="#" class="title-col">Status 
@@ -94,9 +94,9 @@
                                             <td class="text-center pointer"><%= item.name %></td>
                                             <td >
                                                <% include ./../../helpers/image %> 
-                                               <%- imageHelper(folderUpload,item.avatar,item.name)%>
+                                               <%- imageHelper(folderUpload,item.thumb,item.name)%>
                                             </td>
-                                            <td class="text-center pointer"><%= item.group.name %></td> 
+                                            <td class="text-center pointer"><%= item.category.name %></td> 
                                             <td class="text-center pointer"><%- statusHelper(linkPrefix,item.status,item.id) %></td>
                                             <td class="text-center pointer">
                                                 <input type="number" value="<%= item.ordering %>" class="text-center ordering" >

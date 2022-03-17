@@ -7,4 +7,5 @@ module.exports={
     col_groups : 'Group',
     col_users : 'User',
     col_categories : 'Category',
+    col_articles : 'Article',
 }

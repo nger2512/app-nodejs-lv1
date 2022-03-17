@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const categoryModel = require(__path_models+'category');
+const articleModel = require(__path_models + 'article');
 const utilsHelpers = require(__path_helpers+'utils');
 const paramsHelpers = require(__path_helpers+'/params');
 const systemConfig = require(__path_configs+'system')
@@ -132,14 +133,22 @@ router.post('/save',async(req,res)=>{
 
 	let errors = validators.validator(req);
 		
-	if(errors) { 
+	if(errors.length > 0) { 
 		let pageTitle = (taskCurrent == "add") ? pageTitleAdd : pageTitleEdit;
-		res.render(`${folderView}form`, { pageTitle, item, errors});
+		res.render(`${folderview}form`, { pageTitle, item, errors});
 	}else {
 		let message = (taskCurrent == "add") ? notify.ADD_SUCCESS : notify.EDIT_SUCCESS;
 		await categoryModel.saveItem(item, {task: taskCurrent}).then((result) => {
-			req.flash('success', message, false);
-			res.redirect(linkIndex);
+            if(taskCurrent == "add") {
+				req.flash('success', message, false);
+				res.redirect(linkIndex);
+			}else if(taskCurrent == "edit") {
+				articleModel.saveItem(item, {task: 'change-category-name'}).then((result) => {
+					req.flash('success', notify.EDIT_SUCCESS, false);
+					res.redirect(linkIndex);
+				});
+			}
+			
 		});
 	}
 })
